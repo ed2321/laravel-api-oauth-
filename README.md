@@ -63,3 +63,95 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 # laravel-api-oauth-2
+
+# Laravel Api Authentication - Step by Step
+Pratical step-by-step how to do a RESTful API in Laravel 5.5 with authentication by email and password using Laravel Passport (OAuth 2.0)
+
+### Prerequisites
+* Apache
+* PHP
+* Composer
+### Initial notes
+The project in this repo contains all the steps finalized
+
+### Step 1 - Add Laravel Passport to composer.json
+In the project dir run
+```
+composer install
+```
+
+### Step 2 - Run migrations
+```
+php artisan migrate
+```
+
+### Step 3 - Install Laravel Passport
+```
+php artisan passport:install
+```
+
+### Step 3.1 - Install frontend jetstream
+```
+npm install && npm run dev
+```
+
+### Step 4 - Add HasApiTokens at app/User.php
+```php
+<?php
+
+namespace App;
+
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, Notifiable;
+
+    [...]    
+}
+```
+
+### Step 5 - Add Passport Routes to auth provider
+In the "app/Providers/AuthServiceProvider.php" add passport routes to boot method
+```php
+<?php
+
+namespace App\Providers;
+
+use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    protected $policies = [
+        'App\Model' => 'App\Policies\ModelPolicy',
+    ];
+
+
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        Passport::routes();
+    }
+}
+```
+
+### Step 6 - Alter auth api driver to "passport"
+In the "config/auth.php" adjust the driver for api auth
+```
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+    'api' => [
+        'driver' => 'passport',
+        'provider' => 'users',
+    ],
+],
+```
