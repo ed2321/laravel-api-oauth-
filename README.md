@@ -83,6 +83,7 @@ composer install
 ```
 
 ### Step 2 - Run migrations
+configure the .env file before this
 ```
 php artisan migrate
 ```
@@ -156,4 +157,9 @@ In the "config/auth.php" adjust the driver for api auth
         'provider' => 'users',
     ],
 ],
+```
+
+### Step 7 - run project
+```
+php artisan serve
 ```
