@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+
+  app:
+    build: .
+    environment:
+      - ENV=LOCAL
+    ports:
+      - 80:80
+
+  db:
+    image: mariadb:10.5.12
+    ports:
+      - 3306:3306

@@ -1,0 +1,26 @@
+FROM node:lts as builder
+WORKDIR /app
+ADD src/package.json /app
+RUN npm install
+COPY src /app
+RUN npm run prod
+
+FROM php:7.3-fpm
+WORKDIR /app
+RUN apt update
+RUN apt install -y nginx libssh2-1-dev g++ make nano htop zip unzip libcurl4-openssl-dev pkg-config libssl-dev
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN pecl install mongodb ssh2-1.3.1 redis
+RUN docker-php-ext-enable mysqli pdo pdo_mysql mongodb ssh2 redis
+COPY php/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY php/www.conf /usr/local/etc/php-fpm.d/www.conf
+# COPY . /app
+COPY --from=builder /app .
+RUN composer install
+RUN php artisan fix:passport
+RUN chown -R www-data:www-data /app
+ADD nginx/default /etc/nginx/sites-available/default
+ADD scripts/start.sh /start.sh
+RUN chmod 755 /start.sh
+CMD /start.sh
