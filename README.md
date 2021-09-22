@@ -65,12 +65,14 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 # laravel-api-oauth-2
 
 # Laravel Api Authentication - Step by Step
-Pratical step-by-step how to do a RESTful API in Laravel 5.5 with authentication by email and password using Laravel Passport (OAuth 2.0)
+Pratical step-by-step how to do a RESTful API in Laravel 8.54 with authentication by email and password using Laravel Passport (OAuth 2.0) and jetstream
 
 ### Prerequisites
 * Apache
 * PHP
 * Composer
+* node js
+* npm
 ### Initial notes
 The project in this repo contains all the steps finalized
 
